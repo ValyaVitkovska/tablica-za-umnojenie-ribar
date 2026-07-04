@@ -2,7 +2,7 @@
 <html lang="bg">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Риболов с Умножение</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -442,6 +442,214 @@
             }
         }
 
+
+        /* Responsive layout: phone, tablet, laptop */
+        *, *::before, *::after { box-sizing: border-box; }
+
+        body, html {
+            width: 100%;
+            min-height: 100%;
+            overscroll-behavior: none;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        #game-container {
+            height: 100vh;
+            height: 100svh;
+            height: 100dvh;
+            max-height: 100dvh;
+            overflow: hidden;
+        }
+
+        #sky {
+            flex: 0 0 clamp(78px, 22dvh, 190px);
+            height: auto;
+        }
+
+        #land {
+            flex: 0 0 clamp(112px, 25dvh, 210px);
+            height: auto;
+            min-height: 112px;
+        }
+
+        #water-container {
+            flex: 1 1 auto;
+            min-height: 150px;
+        }
+
+        #water { touch-action: none; }
+
+        #question-board {
+            max-width: min(52vw, 440px);
+            min-width: clamp(132px, 26vw, 230px);
+            padding: clamp(6px, 1.1vw, 12px) clamp(14px, 3vw, 40px);
+            font-size: clamp(1.55rem, 4.2vw, 2.7rem);
+            border-width: clamp(2px, 0.55vw, 4px);
+            top: clamp(8px, 2dvh, 20px);
+        }
+
+        #stats-board {
+            max-width: min(38vw, 250px);
+            padding: clamp(6px, 1.1vw, 12px) clamp(8px, 1.5vw, 20px);
+            font-size: clamp(0.72rem, 1.45vw, 1.1rem);
+            gap: clamp(2px, 0.55vw, 5px);
+        }
+
+        .stat-item { min-width: clamp(96px, 17vw, 140px); }
+        .stat-item span { font-size: clamp(0.95rem, 2.2vw, 1.4rem); }
+
+        #controls { max-width: 42vw; }
+
+        .btn {
+            min-height: 44px;
+            min-width: 44px;
+            padding: clamp(7px, 1.2vw, 12px) clamp(10px, 2vw, 22px);
+            font-size: clamp(0.78rem, 1.7vw, 1.1rem);
+            touch-action: manipulation;
+        }
+
+        #fisherman {
+            font-size: clamp(3.35rem, 8.5vw, 5.5rem);
+            right: clamp(12%, 24vw, 27%);
+            bottom: clamp(10px, 2.6dvh, 24px);
+        }
+
+        .fishing-rod {
+            width: clamp(4px, 0.6vw, 6px);
+            height: clamp(88px, 16dvh, 140px);
+            right: calc(clamp(12%, 24vw, 27%) + clamp(34px, 6.4vw, 58px));
+            bottom: clamp(34px, 7dvh, 55px);
+        }
+
+        .fishing-line {
+            height: clamp(108px, 20dvh, 180px);
+            top: calc(-1 * clamp(108px, 20dvh, 180px));
+        }
+
+        .fishing-bobber {
+            top: calc(-1 * clamp(112px, 20.6dvh, 185px));
+        }
+
+        .fish {
+            width: clamp(92px, 16vw, 132px);
+            height: clamp(58px, 9vw, 78px);
+            touch-action: none;
+        }
+
+        .fish-body { font-size: clamp(3.75rem, 8vw, 5.1rem); }
+
+        .fish-value {
+            font-size: clamp(1.08rem, 2.7vw, 1.45rem);
+            padding: clamp(2px, 0.5vw, 4px) clamp(7px, 1.2vw, 10px);
+            border-radius: 999px;
+        }
+
+        .sun {
+            width: clamp(42px, 8vw, 80px);
+            height: clamp(42px, 8vw, 80px);
+            top: clamp(8px, 2dvh, 20px);
+            right: clamp(14px, 5vw, 50px);
+        }
+
+        .cloud-1, .cloud-2 { transform-origin: center; }
+
+        #message-overlay {
+            padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+        }
+
+        #message-box {
+            width: min(92vw, 560px);
+            max-height: 88dvh;
+            overflow: auto;
+            padding: clamp(22px, 4vw, 40px) clamp(18px, 5vw, 60px);
+        }
+
+        #message-title { font-size: clamp(1.8rem, 5vw, 2.5rem) !important; }
+        #message-text { font-size: clamp(1.15rem, 3.6vw, 1.5rem) !important; }
+        #message-box .btn { font-size: clamp(1rem, 3.2vw, 1.3rem) !important; }
+
+        @media (max-width: 900px) {
+            .landscape-deco.bush { opacity: 0.82; transform: scale(0.78); transform-origin: bottom center; }
+            .flower { font-size: 1.15rem; }
+        }
+
+        @media (max-width: 640px) {
+            #stats-board {
+                top: max(8px, env(safe-area-inset-top));
+                left: max(8px, env(safe-area-inset-left));
+                max-width: 142px;
+                padding: 6px 8px;
+                border-width: 2px;
+                border-radius: 12px;
+            }
+
+            #controls {
+                top: max(8px, env(safe-area-inset-top));
+                right: max(8px, env(safe-area-inset-right));
+            }
+
+            .btn {
+                border-radius: 9px;
+                line-height: 1.05;
+            }
+
+            #question-board {
+                max-width: min(58vw, 240px);
+                min-width: 120px;
+            }
+
+            #sky { flex-basis: clamp(70px, 19dvh, 120px); }
+            #land { flex-basis: clamp(105px, 23dvh, 145px); }
+            #water-container { min-height: 180px; }
+
+            .wave-layer { height: 38px; background-size: 760px 38px; }
+            #wave1 { top: -19px; }
+            #wave2 { top: -12px; }
+
+            .fish:hover { transform: none; }
+            .fish.swimming-left .fish-value { left: -12px; }
+            .fish.swimming-right .fish-value { right: -12px; }
+
+            #author-footer {
+                padding-left: max(6px, env(safe-area-inset-left));
+                padding-right: max(6px, env(safe-area-inset-right));
+            }
+        }
+
+        @media (max-width: 420px) {
+            #stats-board { max-width: 126px; }
+            .stat-item { min-width: 104px; }
+            #controls { max-width: 112px; }
+            .btn { padding-left: 8px; padding-right: 8px; }
+            #question-board { top: 6px; }
+            .sun, .cloud-2, .landscape-deco:nth-of-type(2), .landscape-deco:nth-of-type(6) { display: none; }
+        }
+
+        @media (max-height: 520px) and (orientation: landscape) {
+            #sky { flex-basis: 60px; }
+            #land { flex-basis: 92px; min-height: 92px; }
+            #water-container { min-height: 120px; }
+            #question-board { font-size: clamp(1.35rem, 4.6dvh, 2.05rem); top: 5px; }
+            #fisherman { font-size: clamp(2.8rem, 11dvh, 4rem); bottom: 7px; }
+            .fishing-rod { height: 76px; bottom: 28px; }
+            .fishing-line { height: 86px; top: -86px; }
+            .fishing-bobber { top: -91px; }
+            .fish { width: 92px; height: 54px; }
+            .fish-body { font-size: 3.4rem; }
+            .fish-value { font-size: 1rem; }
+            #stats-board { padding: 5px 8px; gap: 1px; }
+            .stat-item span { font-size: 0.95rem; }
+            .btn { min-height: 38px; }
+            #author-footer { flex-basis: 24px; min-height: 24px; font-size: 0.58rem; }
+            #author-footer img { width: 16px; height: 16px; }
+        }
+
+        @media (min-width: 1000px) {
+            #stats-board { max-width: 280px; }
+            #question-board { max-width: 520px; }
+        }
+
     </style>
 </head>
 <body>
@@ -535,14 +743,47 @@
         let isGameOver = false;
 
         let spawnInterval;
-        const maxFishesOnScreen = 8;
+        let maxFishesOnScreen = 8;
+        let fishSpeedConfig = { minDuration: 8, maxDuration: 22, spawnDelay: 1500 };
+        let resizeTimer;
         const waterElement = document.getElementById('water');
         const questionElement = document.getElementById('current-question');
         const scoreElement = document.getElementById('score');
         
         let reactionTimeout;
 
+
+        function getResponsiveGameConfig() {
+            const width = window.innerWidth || document.documentElement.clientWidth;
+            const height = window.innerHeight || document.documentElement.clientHeight;
+            const isCompactPhone = width <= 480 || height <= 520;
+            const isTabletOrSmallLaptop = width <= 1024;
+
+            if (isCompactPhone) {
+                return { maxFishes: 5, minDuration: 10, maxDuration: 18, spawnDelay: 1850 };
+            }
+            if (isTabletOrSmallLaptop) {
+                return { maxFishes: 6, minDuration: 9, maxDuration: 17, spawnDelay: 1650 };
+            }
+            return { maxFishes: 8, minDuration: 8, maxDuration: 22, spawnDelay: 1500 };
+        }
+
+        function applyResponsiveGameSettings() {
+            fishSpeedConfig = getResponsiveGameConfig();
+            maxFishesOnScreen = fishSpeedConfig.maxFishes;
+
+            while (waterElement.children.length > maxFishesOnScreen) {
+                waterElement.removeChild(waterElement.lastElementChild);
+            }
+        }
+
+        function restartSpawnInterval() {
+            if (spawnInterval) clearInterval(spawnInterval);
+            spawnInterval = setInterval(checkAndSpawnFishes, fishSpeedConfig.spawnDelay);
+        }
+
         function initGame() {
+            applyResponsiveGameSettings();
             score = 0;
             correctAnswers = 0;
             incorrectAnswers = 0;
@@ -560,8 +801,7 @@
             closeMessage();
             resetFisherman();
             
-            if (spawnInterval) clearInterval(spawnInterval);
-            spawnInterval = setInterval(checkAndSpawnFishes, 1500); // Малко по-бързо появяване
+            restartSpawnInterval(); // Интервалът се адаптира според устройството
 
             if (gameTimerInterval) clearInterval(gameTimerInterval);
             gameTimerInterval = setInterval(updateGameTimer, 1000);
@@ -688,9 +928,10 @@
             const topPos = 5 + Math.random() * 65; 
             fish.style.top = `${topPos}%`;
 
-            const duration = 8 + Math.random() * 14; 
-            const startX = isSwimmingRight ? -150 : window.innerWidth + 50;
-            const endX = isSwimmingRight ? window.innerWidth + 150 : -250;
+            const duration = fishSpeedConfig.minDuration + Math.random() * (fishSpeedConfig.maxDuration - fishSpeedConfig.minDuration); 
+            const travelPadding = Math.max(150, Math.min(260, window.innerWidth * 0.32));
+            const startX = isSwimmingRight ? -travelPadding : window.innerWidth + travelPadding / 2;
+            const endX = isSwimmingRight ? window.innerWidth + travelPadding / 2 : -travelPadding;
             
             const animation = fish.animate([
                 { transform: `translateX(${startX}px)` },
@@ -701,8 +942,7 @@
                 easing: 'linear'
             });
 
-            fish.addEventListener('mousedown', () => catchFish(fish, fishValue, animation));
-            fish.addEventListener('touchstart', (e) => {
+            fish.addEventListener('pointerdown', (e) => {
                 e.preventDefault();
                 catchFish(fish, fishValue, animation);
             });
@@ -716,7 +956,8 @@
         }
 
         function catchFish(fishElement, value, animation) {
-            if (isGameOver) return;
+            if (isGameOver || fishElement.dataset.caught === 'true') return;
+            fishElement.dataset.caught = 'true';
 
             animation.pause();
             
@@ -799,6 +1040,22 @@
         window.resetGame = function() {
              initGame();
         };
+
+
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                applyResponsiveGameSettings();
+                restartSpawnInterval();
+            }, 180);
+        });
+
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => {
+                applyResponsiveGameSettings();
+                restartSpawnInterval();
+            }, 250);
+        });
 
         window.onload = function() {
             initGame();
