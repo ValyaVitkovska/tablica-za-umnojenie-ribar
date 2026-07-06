@@ -184,14 +184,171 @@
         }
 
         #fisherman {
-            font-size: 5.5rem;
             position: absolute;
-            bottom: 20px;
+            bottom: 14px;
             right: 25%;
+            width: 78px;
+            height: 124px;
             z-index: 15;
-            transition: transform 0.2s;
+            transition: transform 0.2s, filter 0.2s;
             filter: drop-shadow(3px 5px 5px rgba(0,0,0,0.4));
             transform-origin: bottom center;
+            pointer-events: none;
+        }
+
+        .fisherman-figure {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .fisher-hat-brim {
+            position: absolute;
+            top: 8%;
+            left: 50%;
+            width: 58%;
+            height: 6%;
+            transform: translateX(-50%);
+            background: #6D4C41;
+            border-radius: 999px;
+            z-index: 5;
+        }
+
+        .fisher-hat-top {
+            position: absolute;
+            top: 2%;
+            left: 50%;
+            width: 38%;
+            height: 12%;
+            transform: translateX(-50%);
+            background: #795548;
+            border-radius: 50% 50% 12% 12%;
+            z-index: 4;
+        }
+
+        .fisher-head {
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            width: 36%;
+            aspect-ratio: 1;
+            transform: translateX(-50%);
+            background: #F4C19C;
+            border: 2px solid rgba(93, 64, 55, 0.35);
+            border-radius: 50%;
+            z-index: 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.86rem;
+            line-height: 1;
+        }
+
+        .fisher-neck {
+            position: absolute;
+            top: 33%;
+            left: 50%;
+            width: 13%;
+            height: 10%;
+            transform: translateX(-50%);
+            background: #E0A77F;
+            border-radius: 30%;
+            z-index: 1;
+        }
+
+        .fisher-body {
+            position: absolute;
+            top: 39%;
+            left: 50%;
+            width: 44%;
+            height: 32%;
+            transform: translateX(-50%);
+            background: linear-gradient(to bottom, #2E7D32, #1B5E20);
+            border: 2px solid rgba(0,0,0,0.18);
+            border-radius: 30% 30% 18% 18%;
+            z-index: 2;
+        }
+
+        .fisher-body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 18%;
+            height: 100%;
+            transform: translateX(-50%);
+            background: rgba(255,255,255,0.78);
+        }
+
+        .fisher-body::after {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 8%;
+            right: 8%;
+            height: 22%;
+            border-top: 2px solid rgba(255,255,255,0.6);
+            border-bottom: 2px solid rgba(255,255,255,0.35);
+        }
+
+        .fisher-arm {
+            position: absolute;
+            top: 43%;
+            width: 11%;
+            height: 31%;
+            background: #E0A77F;
+            border-radius: 999px;
+            transform-origin: top center;
+            z-index: 1;
+        }
+
+        .fisher-arm-left {
+            left: 25%;
+            transform: rotate(18deg);
+        }
+
+        .fisher-arm-right {
+            right: 25%;
+            transform: rotate(-35deg);
+        }
+
+        .fisher-leg {
+            position: absolute;
+            top: 68%;
+            width: 12%;
+            height: 26%;
+            background: #263238;
+            border-radius: 999px;
+            transform-origin: top center;
+            z-index: 1;
+        }
+
+        .fisher-leg-left {
+            left: 38%;
+            transform: rotate(7deg);
+        }
+
+        .fisher-leg-right {
+            right: 38%;
+            transform: rotate(-7deg);
+        }
+
+        .fisher-boot {
+            position: absolute;
+            bottom: 0;
+            width: 21%;
+            height: 7%;
+            background: #3E2723;
+            border-radius: 999px;
+            z-index: 2;
+        }
+
+        .fisher-boot-left { left: 29%; }
+        .fisher-boot-right { right: 29%; }
+
+        .fisher-face {
+            display: inline-flex;
+            transform: translateY(1px);
         }
 
         /* Анимации за реакциите на рибаря */
@@ -510,10 +667,13 @@
         }
 
         #fisherman {
-            font-size: clamp(3.35rem, 8.5vw, 5.5rem);
+            width: clamp(54px, 8.2vw, 82px);
+            height: clamp(86px, 15.5dvh, 128px);
             right: clamp(12%, 24vw, 27%);
-            bottom: clamp(10px, 2.6dvh, 24px);
+            bottom: clamp(5px, 1.8dvh, 16px);
         }
+
+        .fisher-head { font-size: clamp(0.62rem, 1.25vw, 0.9rem); }
 
         .fishing-rod {
             width: clamp(4px, 0.6vw, 6px);
@@ -603,6 +763,15 @@
             #land { flex-basis: clamp(105px, 23dvh, 145px); }
             #water-container { min-height: 180px; }
 
+            #fisherman {
+                width: clamp(44px, 13vw, 60px);
+                height: clamp(70px, 18dvh, 96px);
+                bottom: 4px;
+                right: clamp(10%, 22vw, 28%);
+            }
+
+            .fisher-head { font-size: clamp(0.5rem, 2.2vw, 0.68rem); }
+
             .wave-layer { height: 38px; background-size: 760px 38px; }
             #wave1 { top: -19px; }
             #wave2 { top: -12px; }
@@ -631,7 +800,7 @@
             #land { flex-basis: 92px; min-height: 92px; }
             #water-container { min-height: 120px; }
             #question-board { font-size: clamp(1.35rem, 4.6dvh, 2.05rem); top: 5px; }
-            #fisherman { font-size: clamp(2.8rem, 11dvh, 4rem); bottom: 7px; }
+            #fisherman { width: clamp(38px, 10dvh, 52px); height: clamp(58px, 18dvh, 78px); bottom: 3px; }
             .fishing-rod { height: 76px; bottom: 28px; }
             .fishing-line { height: 86px; top: -86px; }
             .fishing-bobber { top: -91px; }
@@ -693,7 +862,21 @@
             </div>
             
             <!-- Рибарят -->
-            <div id="fisherman" class="anim-idle">🧔‍♂️</div>
+            <div id="fisherman" class="anim-idle" aria-label="Рибар">
+                <div class="fisherman-figure" aria-hidden="true">
+                    <div class="fisher-hat-top"></div>
+                    <div class="fisher-hat-brim"></div>
+                    <div class="fisher-head"><span class="fisher-face">🙂</span></div>
+                    <div class="fisher-neck"></div>
+                    <div class="fisher-body"></div>
+                    <div class="fisher-arm fisher-arm-left"></div>
+                    <div class="fisher-arm fisher-arm-right"></div>
+                    <div class="fisher-leg fisher-leg-left"></div>
+                    <div class="fisher-leg fisher-leg-right"></div>
+                    <div class="fisher-boot fisher-boot-left"></div>
+                    <div class="fisher-boot fisher-boot-right"></div>
+                </div>
+            </div>
             
             <div id="bank"></div>
         </div>
@@ -731,6 +914,7 @@
     <script>
         const fishEmojis = ['🐟', '🐠', '🐡', '🦈', '🐬'];
         const fishermanEl = document.getElementById('fisherman');
+        const fishermanFaceEl = fishermanEl.querySelector('.fisher-face');
         const rodEl = document.getElementById('rod');
 
         let currentCorrectAnswers = [];
@@ -813,10 +997,10 @@
             fishermanEl.className = ''; // Изчистваме старите класове
             
             if (type === 'happy') {
-                fishermanEl.innerText = '🥳';
+                if (fishermanFaceEl) fishermanFaceEl.textContent = '😄';
                 fishermanEl.classList.add('anim-happy');
             } else if (type === 'sad') {
-                fishermanEl.innerText = '🤦‍♂️';
+                if (fishermanFaceEl) fishermanFaceEl.textContent = '😟';
                 fishermanEl.classList.add('anim-sad');
             }
 
@@ -827,7 +1011,7 @@
         }
 
         function resetFisherman() {
-            fishermanEl.innerText = '🧔‍♂️';
+            if (fishermanFaceEl) fishermanFaceEl.textContent = '🙂';
             fishermanEl.className = 'anim-idle';
         }
 
