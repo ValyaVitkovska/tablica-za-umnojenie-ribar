@@ -828,6 +828,7 @@
         <div id="stats-board">
             <div class="stat-item text-blue-700"><span class="text-base uppercase">Време:</span> <span id="timer">180</span></div>
             <div class="stat-item"><span class="text-base uppercase">Точки:</span> <span id="score">0</span></div>
+            <div class="stat-item text-amber-600" title="До 2 сек: +10; до 4 сек: +7; до 6 сек: +5; до 9 сек: +3"><span class="text-base uppercase">Бързина:</span> <span id="speed-bonus">+0</span></div>
             <div class="stat-item text-green-600"><span class="text-base uppercase">Верни:</span> <span id="correct-count">0</span></div>
             <div class="stat-item text-red-600"><span class="text-base uppercase">Грешни:</span> <span id="incorrect-count">0</span></div>
         </div>
@@ -920,6 +921,8 @@
         let currentCorrectAnswers = [];
         let currentMode = '';
         let score = 0;
+        let speedBonusTotal = 0;
+        let questionStartedAt = 0;
         let correctAnswers = 0;
         let incorrectAnswers = 0;
         let timeLeft = 180;
@@ -969,6 +972,8 @@
         function initGame() {
             applyResponsiveGameSettings();
             score = 0;
+            speedBonusTotal = 0;
+            questionStartedAt = 0;
             correctAnswers = 0;
             incorrectAnswers = 0;
             timeLeft = 180;
@@ -976,6 +981,7 @@
             
             updateScore(0);
             updateStats();
+            updateSpeedBonus(0);
             document.getElementById('timer').innerText = timeLeft;
             document.getElementById('timer').style.color = '';
             
@@ -1035,6 +1041,7 @@
             
             const statsHtml = `
                 <span>🏆 Общо Точки: <b class="text-blue-600">${score}</b></span>
+                <span>⚡ Бонус за бързина: <b class="text-amber-600">${speedBonusTotal}</b></span>
                 <span>✅ Верни улови: <b class="text-green-600">${correctAnswers}</b></span>
                 <span>❌ Изпуснати риби: <b class="text-red-600">${incorrectAnswers}</b></span>
             `;
@@ -1067,6 +1074,27 @@
                     }
                 }
             }
+
+            questionStartedAt = performance.now();
+        }
+
+        function getSpeedBonus(elapsedSeconds) {
+            if (elapsedSeconds <= 2) return 10;
+            if (elapsedSeconds <= 4) return 7;
+            if (elapsedSeconds <= 6) return 5;
+            if (elapsedSeconds <= 9) return 3;
+            return 0;
+        }
+
+        function updateSpeedBonus(points) {
+            const bonusEl = document.getElementById('speed-bonus');
+            bonusEl.innerText = `+${points}`;
+            bonusEl.style.color = points > 0 ? '#F59E0B' : '';
+            bonusEl.style.transform = points > 0 ? 'scale(1.6)' : 'scale(1)';
+            setTimeout(() => {
+                bonusEl.style.transform = 'scale(1)';
+                bonusEl.style.color = '';
+            }, 500);
         }
 
         function createFish(forceCorrectAnswer = false) {
@@ -1159,7 +1187,11 @@
             }, 200);
 
             if (currentCorrectAnswers.includes(value)) {
-                updateScore(10);
+                const elapsedSeconds = (performance.now() - questionStartedAt) / 1000;
+                const speedBonus = getSpeedBonus(elapsedSeconds);
+                speedBonusTotal += speedBonus;
+                updateScore(10 + speedBonus);
+                updateSpeedBonus(speedBonus);
                 correctAnswers++;
                 updateStats();
                 animateStatElement('correct-count', '#4CAF50');
