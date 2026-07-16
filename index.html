@@ -159,9 +159,71 @@
 
         #water {
             height: 100%;
-            background: linear-gradient(to bottom, #0288D1, #01579B);
+            background:
+                radial-gradient(ellipse at 18% 18%, rgba(129,212,250,.18) 0 2%, transparent 9%),
+                radial-gradient(ellipse at 72% 42%, rgba(79,195,247,.13) 0 2%, transparent 10%),
+                linear-gradient(to bottom, #0288D1, #01579B);
             position: relative;
             overflow: hidden;
+        }
+
+        #river-ripples {
+            position: absolute;
+            inset: 0;
+            z-index: 18;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        #river-ripples::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            opacity: .13;
+            background-image:
+                repeating-radial-gradient(ellipse at 20% 25%, transparent 0 28px, rgba(179,229,252,.28) 29px 31px, transparent 32px 67px),
+                repeating-radial-gradient(ellipse at 75% 68%, transparent 0 38px, rgba(79,195,247,.22) 39px 41px, transparent 42px 82px);
+            animation: waterShimmer 12s linear infinite alternate;
+        }
+
+        .river-ripple {
+            position: absolute;
+            left: var(--x);
+            top: var(--y);
+            width: var(--w);
+            height: clamp(10px, 2dvh, 19px);
+            border-top: 2px solid rgba(225,247,250,.68);
+            border-radius: 50%;
+            opacity: 0;
+            filter: drop-shadow(0 2px 1px rgba(1,87,155,.25));
+            animation: rippleGlide var(--speed) ease-in-out var(--delay) infinite;
+        }
+
+        .river-ripple::after {
+            content: '';
+            position: absolute;
+            left: 22%;
+            top: 5px;
+            width: 58%;
+            height: 9px;
+            border-top: 2px solid rgba(179,229,252,.58);
+            border-radius: 50%;
+        }
+
+        @keyframes rippleGlide {
+            0% { opacity: 0; transform: translateX(-18px) scaleX(.65); }
+            18% { opacity: .72; }
+            55% { opacity: .9; transform: translateX(12px) scaleX(1.12); }
+            100% { opacity: 0; transform: translateX(42px) scaleX(1.38); }
+        }
+
+        @keyframes waterShimmer {
+            from { transform: translate3d(-18px, -7px, 0) scale(1); }
+            to { transform: translate3d(25px, 12px, 0) scale(1.06); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .river-ripple, #river-ripples::before { animation: none; opacity: .42; }
         }
 
         @keyframes moveWaves {
@@ -1068,6 +1130,16 @@
             <div id="wave2" class="wave-layer"></div>
             <div id="water">
                 <!-- Рибите се генерират тук -->
+            </div>
+            <div id="river-ripples" aria-hidden="true">
+                <span class="river-ripple" style="--x:6%;--y:13%;--w:92px;--speed:5.2s;--delay:-1.4s"></span>
+                <span class="river-ripple" style="--x:28%;--y:29%;--w:128px;--speed:6.1s;--delay:-4.2s"></span>
+                <span class="river-ripple" style="--x:55%;--y:12%;--w:82px;--speed:4.7s;--delay:-2.8s"></span>
+                <span class="river-ripple" style="--x:78%;--y:35%;--w:116px;--speed:5.8s;--delay:-.9s"></span>
+                <span class="river-ripple" style="--x:14%;--y:58%;--w:135px;--speed:6.4s;--delay:-3.6s"></span>
+                <span class="river-ripple" style="--x:43%;--y:70%;--w:104px;--speed:5.5s;--delay:-1.9s"></span>
+                <span class="river-ripple" style="--x:68%;--y:61%;--w:144px;--speed:6.8s;--delay:-5.1s"></span>
+                <span class="river-ripple" style="--x:88%;--y:78%;--w:76px;--speed:4.9s;--delay:-2.2s"></span>
             </div>
             <div id="fish-basket" aria-label="Живарник за уловените риби">
                 <div class="basket-label">Живарник</div>
