@@ -180,7 +180,7 @@
 
         /* ===== Небе, суша, вода (същия визуален стил като основната игра) ===== */
         .sky {
-            flex: 0 0 clamp(48px, 15dvh, 120px);
+            flex: 0 0 clamp(28px, 16%, 120px);
             background: linear-gradient(to bottom, #4fc3f7, #b3e5fc);
             position: relative;
             overflow: hidden;
@@ -199,7 +199,7 @@
         }
 
         .land {
-            flex: 0 0 clamp(78px, 20dvh, 165px);
+            flex: 0 0 clamp(46px, 22%, 165px);
             background: linear-gradient(to bottom, #81C784, #4CAF50);
             position: relative;
             z-index: 10;
@@ -230,21 +230,22 @@
             color: #3E2723;
             box-shadow: 0 6px 0px #5D4037, 0 10px 14px rgba(0,0,0,0.4);
             position: absolute;
-            top: clamp(4px, 1.4dvh, 12px);
+            top: 38%;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translate(-50%, -50%);
             z-index: 20;
             min-width: 90px;
             text-align: center;
             white-space: nowrap;
+            max-width: 92%;
         }
 
         .fisherman {
             position: absolute;
-            bottom: clamp(4px, 1.4dvh, 12px);
+            bottom: clamp(3px, 6%, 12px);
             right: clamp(10%, 22%, 26%);
             width: clamp(34px, 8vw, 62px);
-            height: clamp(56px, 13dvh, 96px);
+            height: clamp(38px, 62%, 96px);
             z-index: 15;
             transition: transform 0.2s, filter 0.2s;
             filter: drop-shadow(2px 4px 4px rgba(0,0,0,0.4));
@@ -281,9 +282,9 @@
         .fishing-rod {
             position: absolute;
             width: clamp(3px, 0.5vw, 5px);
-            height: clamp(64px, 15dvh, 112px);
+            height: clamp(44px, 70%, 112px);
             background: linear-gradient(to right, #8D6E63, #5D4037);
-            bottom: clamp(24px, 6dvh, 44px);
+            bottom: clamp(16px, 26%, 44px);
             right: calc(clamp(10%, 22%, 26%) + clamp(24px, 5.5vw, 46px));
             transform-origin: bottom right;
             transform: rotate(45deg);
@@ -292,8 +293,8 @@
             border-radius: 3px;
         }
         .fishing-rod.catching { transform: rotate(15deg); }
-        .fishing-line { position: absolute; width: 1px; height: clamp(78px, 16dvh, 140px); background-color: rgba(255,255,255,0.8); top: calc(-1 * clamp(78px, 16dvh, 140px)); right: 0; z-index: 14; }
-        .fishing-bobber { position: absolute; top: calc(-1 * clamp(82px, 16.6dvh, 145px)); right: -4px; width: 7px; height: 10px; background: red; border-radius: 4px; border-bottom: 5px solid white; }
+        .fishing-line { position: absolute; width: 1px; height: clamp(54px, 124%, 140px); background-color: rgba(255,255,255,0.8); top: clamp(-140px, -124%, -54px); right: 0; z-index: 14; }
+        .fishing-bobber { position: absolute; top: clamp(-145px, -129%, -58px); right: -4px; width: 7px; height: 10px; background: red; border-radius: 4px; border-bottom: 5px solid white; }
 
         .water-container { flex: 1 1 auto; min-height: 0; position: relative; z-index: 5; overflow: hidden; }
         .wave-layer { position: absolute; left: 0; width: 200%; height: 32px; background-repeat: repeat-x; background-size: 700px 32px; z-index: 12; }
