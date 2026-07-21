@@ -1,7 +1,8 @@
-const CACHE_NAME = 'ribolov-umnozhenie-v10';
+const CACHE_NAME = 'ribolov-umnozhenie-v11';
 const APP_FILES = [
   './',
   './index.html',
+  './duel.html',
   './manifest.webmanifest',
   './icons/icon-192-v2.png',
   './icons/icon-512-v2.png',

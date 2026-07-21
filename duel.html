@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Дуел: Риболов с Умножение</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192-v2.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512-v2.png">
+    <link rel="apple-touch-icon" href="icons/icon-192-v2.png">
+    <meta name="theme-color" content="#0288D1">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #263238;
+            user-select: none;
+            overscroll-behavior: none;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        #duel-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            height: 100svh;
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== Горна лента: заглавие, таймер, контроли ===== */
+        #duel-topbar {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 8px clamp(10px, 2vw, 20px);
+            background: linear-gradient(to bottom, #37474F, #263238);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+            z-index: 60;
+            flex-wrap: wrap;
+        }
+
+        .duel-title {
+            color: #FFEB3B;
+            font-weight: 900;
+            font-size: clamp(0.9rem, 2.2vw, 1.4rem);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+            white-space: nowrap;
+        }
+
+        #duel-timer-box {
+            background-color: rgba(255,255,255,0.95);
+            padding: 6px 18px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: clamp(1rem, 2.6vw, 1.5rem);
+            color: #263238;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            border: 3px solid #FFEB3B;
+        }
+
+        #duel-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            background: linear-gradient(to bottom, #4DD0E1, #00ACC1);
+            border: 2px solid #00838F;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: clamp(0.75rem, 1.6vw, 1rem);
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            text-transform: uppercase;
+            min-height: 40px;
+            touch-action: manipulation;
+        }
+        .btn:hover { background: linear-gradient(to bottom, #26C6DA, #0097A7); transform: translateY(-2px); }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #90A4AE;
+            color: #ECEFF1;
+        }
+        .btn-outline:hover { background: rgba(255,255,255,0.12); }
+
+        #speed-selector {
+            display: flex;
+            gap: 5px;
+            background-color: rgba(255,255,255,0.12);
+            padding: 5px 7px;
+            border-radius: 10px;
+            border: 2px solid rgba(255,255,255,0.25);
+        }
+
+        .speed-btn {
+            background: rgba(255,255,255,0.9);
+            border: 2px solid #00838F;
+            color: #00636E;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: clamp(0.62rem, 1.3vw, 0.8rem);
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+        .speed-btn.active {
+            background: linear-gradient(to bottom, #4DD0E1, #00838F);
+            color: white;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* ===== Арена с двамата играчи ===== */
+        #duel-arena {
+            flex: 1 1 auto;
+            display: flex;
+            flex-direction: row;
+            min-height: 0;
+            position: relative;
+        }
+
+        .player-panel {
+            flex: 1 1 50%;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            position: relative;
+        }
+
+        .player-panel.p1 { border-right: 2px solid rgba(0,0,0,0.35); }
+
+        .player-topbar {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: clamp(6px, 1.6vw, 16px);
+            padding: 5px 8px;
+            font-weight: 900;
+            font-size: clamp(0.6rem, 1.5vw, 0.95rem);
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            z-index: 45;
+        }
+        .p1 .player-topbar { background: linear-gradient(to right, #1565C0, #1976D2); }
+        .p2 .player-topbar { background: linear-gradient(to left, #C62828, #E53935); }
+
+        .player-name { font-size: clamp(0.7rem, 1.8vw, 1.05rem); }
+        .player-stat b { font-size: clamp(0.85rem, 2.1vw, 1.2rem); transition: transform 0.2s, color 0.2s; display: inline-block; }
+
+        /* ===== Небе, суша, вода (същия визуален стил като основната игра) ===== */
+        .sky {
+            flex: 0 0 clamp(48px, 15dvh, 120px);
+            background: linear-gradient(to bottom, #4fc3f7, #b3e5fc);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .sun {
+            position: absolute;
+            top: clamp(4px, 1.5dvh, 14px);
+            right: clamp(8px, 3vw, 30px);
+            width: clamp(24px, 5vw, 46px);
+            height: clamp(24px, 5vw, 46px);
+            background: #FFEB3B;
+            border-radius: 50%;
+            box-shadow: 0 0 20px #FFEB3B;
+        }
+
+        .land {
+            flex: 0 0 clamp(78px, 20dvh, 165px);
+            background: linear-gradient(to bottom, #81C784, #4CAF50);
+            position: relative;
+            z-index: 10;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            box-shadow: inset 0 12px 16px rgba(255,255,255,0.2);
+        }
+
+        .bank {
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: linear-gradient(to bottom, #D7CCC8, #A1887F);
+            border-radius: 8px;
+            z-index: 11;
+        }
+
+        .question-board {
+            background-color: #FFEB3B;
+            border: clamp(2px, 0.5vw, 4px) solid #795548;
+            border-radius: 10px;
+            padding: clamp(4px, 1vw, 8px) clamp(10px, 2.4vw, 26px);
+            font-size: clamp(1rem, 3.4vw, 1.9rem);
+            font-weight: 900;
+            color: #3E2723;
+            box-shadow: 0 6px 0px #5D4037, 0 10px 14px rgba(0,0,0,0.4);
+            position: absolute;
+            top: clamp(4px, 1.4dvh, 12px);
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20;
+            min-width: 90px;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .fisherman {
+            position: absolute;
+            bottom: clamp(4px, 1.4dvh, 12px);
+            right: clamp(10%, 22%, 26%);
+            width: clamp(34px, 8vw, 62px);
+            height: clamp(56px, 13dvh, 96px);
+            z-index: 15;
+            transition: transform 0.2s, filter 0.2s;
+            filter: drop-shadow(2px 4px 4px rgba(0,0,0,0.4));
+            transform-origin: bottom center;
+            pointer-events: none;
+        }
+
+        .fisherman-figure { position: relative; width: 100%; height: 100%; }
+        .fisher-hat-brim { position: absolute; top: 8%; left: 50%; width: 58%; height: 6%; transform: translateX(-50%); background: #6D4C41; border-radius: 999px; z-index: 5; }
+        .fisher-hat-top { position: absolute; top: 2%; left: 50%; width: 38%; height: 12%; transform: translateX(-50%); background: #795548; border-radius: 50% 50% 12% 12%; z-index: 4; }
+        .fisher-head { position: absolute; top: 10%; left: 50%; width: 36%; aspect-ratio: 1; transform: translateX(-50%); background: #F4C19C; border: 2px solid rgba(93,64,55,0.35); border-radius: 50%; z-index: 3; display: flex; align-items: center; justify-content: center; font-size: clamp(0.5rem, 1.2vw, 0.75rem); line-height: 1; }
+        .fisher-neck { position: absolute; top: 33%; left: 50%; width: 13%; height: 10%; transform: translateX(-50%); background: #E0A77F; border-radius: 30%; z-index: 1; }
+        .fisher-body { position: absolute; top: 39%; left: 50%; width: 44%; height: 32%; transform: translateX(-50%); background: linear-gradient(to bottom, #2E7D32, #1B5E20); border: 2px solid rgba(0,0,0,0.18); border-radius: 30% 30% 18% 18%; z-index: 2; }
+        .p2 .fisher-body { background: linear-gradient(to bottom, #C62828, #B71C1C); }
+        .fisher-body::before { content: ''; position: absolute; top: 0; left: 50%; width: 18%; height: 100%; transform: translateX(-50%); background: rgba(255,255,255,0.78); }
+        .fisher-arm { position: absolute; top: 43%; width: 11%; height: 31%; background: #E0A77F; border-radius: 999px; transform-origin: top center; z-index: 1; }
+        .fisher-arm-left { left: 25%; transform: rotate(18deg); }
+        .fisher-arm-right { right: 25%; transform: rotate(-35deg); }
+        .fisher-leg { position: absolute; top: 68%; width: 12%; height: 26%; background: #263238; border-radius: 999px; transform-origin: top center; z-index: 1; }
+        .fisher-leg-left { left: 38%; transform: rotate(7deg); }
+        .fisher-leg-right { right: 38%; transform: rotate(-7deg); }
+        .fisher-boot { position: absolute; bottom: 0; width: 21%; height: 7%; background: #3E2723; border-radius: 999px; z-index: 2; }
+        .fisher-boot-left { left: 29%; }
+        .fisher-boot-right { right: 29%; }
+        .fisher-face { display: inline-flex; transform: translateY(1px); }
+
+        .anim-idle { animation: breathe 3s infinite ease-in-out; }
+        .anim-happy { animation: jumpHappy 0.6s ease-in-out; filter: drop-shadow(0 0 16px #4CAF50); }
+        .anim-sad { animation: shakeSad 0.5s ease-in-out; filter: drop-shadow(0 0 16px #F44336); }
+        @keyframes breathe { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(1.03) translateY(-2px); } }
+        @keyframes jumpHappy { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-28px) scale(1.1); } }
+        @keyframes shakeSad { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px) rotate(-8deg); } 75% { transform: translateX(10px) rotate(8deg); } }
+
+        .fishing-rod {
+            position: absolute;
+            width: clamp(3px, 0.5vw, 5px);
+            height: clamp(64px, 15dvh, 112px);
+            background: linear-gradient(to right, #8D6E63, #5D4037);
+            bottom: clamp(24px, 6dvh, 44px);
+            right: calc(clamp(10%, 22%, 26%) + clamp(24px, 5.5vw, 46px));
+            transform-origin: bottom right;
+            transform: rotate(45deg);
+            z-index: 14;
+            transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 3px;
+        }
+        .fishing-rod.catching { transform: rotate(15deg); }
+        .fishing-line { position: absolute; width: 1px; height: clamp(78px, 16dvh, 140px); background-color: rgba(255,255,255,0.8); top: calc(-1 * clamp(78px, 16dvh, 140px)); right: 0; z-index: 14; }
+        .fishing-bobber { position: absolute; top: calc(-1 * clamp(82px, 16.6dvh, 145px)); right: -4px; width: 7px; height: 10px; background: red; border-radius: 4px; border-bottom: 5px solid white; }
+
+        .water-container { flex: 1 1 auto; min-height: 0; position: relative; z-index: 5; overflow: hidden; }
+        .wave-layer { position: absolute; left: 0; width: 200%; height: 32px; background-repeat: repeat-x; background-size: 700px 32px; z-index: 12; }
+        .wave1 { top: -16px; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 50' preserveAspectRatio='none'><path d='M0,25 C150,50 350,0 500,25 C650,50 850,0 1000,25 L1000,50 L0,50 Z' fill='%234FC3F7' opacity='0.8'/></svg>"); animation: moveWaves 6s linear infinite; }
+        .wave2 { top: -9px; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 50' preserveAspectRatio='none'><path d='M0,25 C200,0 300,50 500,25 C700,0 800,50 1000,25 L1000,50 L0,50 Z' fill='%230288D1' opacity='0.6'/></svg>"); animation: moveWaves 4s linear infinite reverse; }
+        @keyframes moveWaves { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        .water { height: 100%; background: linear-gradient(to bottom, #0288D1, #01579B); position: relative; overflow: hidden; touch-action: none; }
+
+        .fish {
+            position: absolute;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: clamp(56px, 13vw, 90px);
+            height: clamp(36px, 7vw, 54px);
+            filter: drop-shadow(0 3px 3px rgba(0,0,0,0.3));
+            touch-action: none;
+        }
+        .fish-body { font-size: clamp(2.2rem, 6vw, 3.6rem); position: absolute; z-index: 1; }
+        .fish-value {
+            position: absolute; z-index: 2; font-weight: 900;
+            font-size: clamp(0.72rem, 2vw, 1.05rem); color: #fff; white-space: nowrap;
+            text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+            pointer-events: none; right: -12px; top: 50%; transform: translateY(-50%);
+            background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 8px;
+        }
+        .fish.swimming-right .fish-body { transform: scaleX(-1); }
+        .fish.swimming-left .fish-value { left: -14px; right: auto; }
+        .fish.swimming-right .fish-value { right: -14px; left: auto; }
+
+        /* ===== VS значка на разделителя ===== */
+        .arena-divider-badge {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: clamp(34px, 6vw, 54px);
+            height: clamp(34px, 6vw, 54px);
+            background: radial-gradient(circle, #FFEB3B, #FBC02D);
+            border: 3px solid white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: clamp(0.7rem, 1.8vw, 1.1rem);
+            color: #5D4037;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+            z-index: 55;
+            pointer-events: none;
+        }
+
+        /* ===== Финален екран ===== */
+        #message-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.75); display: flex; align-items: center; justify-content: center;
+            z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+            padding: 16px;
+        }
+        #message-box {
+            background: white; padding: clamp(24px, 4vw, 40px) clamp(20px, 5vw, 50px); border-radius: 20px; text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4); transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 5px solid #00ACC1;
+            width: min(94vw, 560px);
+            max-height: 90dvh;
+            overflow: auto;
+        }
+        #message-overlay.active { opacity: 1; pointer-events: auto; }
+        #message-overlay.active #message-box { transform: scale(1); }
+        #message-title { font-size: clamp(1.5rem, 4.5vw, 2.2rem) !important; }
+        .winner-line { display: block; font-size: clamp(1.1rem, 3.2vw, 1.5rem); font-weight: 900; margin-bottom: 16px; color: #00838F; }
+        .duel-results { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
+        .result-col { padding: 12px 18px; border-radius: 12px; background: #f5f5f5; min-width: 140px; font-size: clamp(0.85rem, 2.4vw, 1.05rem); }
+        .result-col.result-1 { border: 3px solid #1976D2; }
+        .result-col.result-2 { border: 3px solid #E53935; }
+        .result-name { font-weight: 900; margin-bottom: 6px; font-size: clamp(0.9rem, 2.6vw, 1.1rem); }
+
+        @media (max-width: 620px) {
+            #duel-arena { flex-direction: column; }
+            .player-panel.p1 { border-right: none; border-bottom: 3px solid rgba(0,0,0,0.35); }
+            .arena-divider-badge { display: none; }
+            .duel-title { display: none; }
+            #duel-topbar { justify-content: center; }
+        }
+
+        @media (max-height: 480px) and (orientation: landscape) {
+            .sky { flex-basis: 34px; }
+            .land { flex-basis: 62px; }
+            .fisherman { bottom: 2px; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="duel-container">
+    <div id="duel-topbar">
+        <div class="duel-title">🎣 Дуел: Риболов с Умножение</div>
+        <div id="duel-timer-box">Време: <span id="timer">120</span></div>
+        <div id="duel-controls">
+            <button class="btn" onclick="resetGame()">Нова игра</button>
+            <a class="btn btn-outline" href="index.html">🎣 1 играч</a>
+            <div id="speed-selector" role="group" aria-label="Скорост на рибите">
+                <button class="speed-btn" id="speed-slow" onclick="setSpeed('slow')">Бавно</button>
+                <button class="speed-btn" id="speed-normal" onclick="setSpeed('normal')">Средно</button>
+                <button class="speed-btn" id="speed-fast" onclick="setSpeed('fast')">Бързо</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="duel-arena">
+        <div class="player-panel p1">
+            <div class="player-topbar">
+                <span class="player-name">🔵 Играч 1</span>
+                <span class="player-stat">Точки: <b id="score-1">0</b></span>
+                <span class="player-stat">Верни: <b id="correct-count-1">0</b></span>
+                <span class="player-stat">Грешни: <b id="incorrect-count-1">0</b></span>
+            </div>
+            <div class="sky">
+                <div class="sun"></div>
+            </div>
+            <div class="land">
+                <div class="question-board"><span id="current-question-1">...</span></div>
+                <div class="fishing-rod" id="rod-1">
+                    <div class="fishing-line"></div>
+                    <div class="fishing-bobber"></div>
+                </div>
+                <div class="fisherman anim-idle" id="fisherman-1" aria-label="Рибар 1">
+                    <div class="fisherman-figure" aria-hidden="true">
+                        <div class="fisher-hat-top"></div>
+                        <div class="fisher-hat-brim"></div>
+                        <div class="fisher-head"><span class="fisher-face">🙂</span></div>
+                        <div class="fisher-neck"></div>
+                        <div class="fisher-body"></div>
+                        <div class="fisher-arm fisher-arm-left"></div>
+                        <div class="fisher-arm fisher-arm-right"></div>
+                        <div class="fisher-leg fisher-leg-left"></div>
+                        <div class="fisher-leg fisher-leg-right"></div>
+                        <div class="fisher-boot fisher-boot-left"></div>
+                        <div class="fisher-boot fisher-boot-right"></div>
+                    </div>
+                </div>
+                <div class="bank"></div>
+            </div>
+            <div class="water-container">
+                <div class="wave1 wave-layer"></div>
+                <div class="wave2 wave-layer"></div>
+                <div class="water" id="water-1"></div>
+            </div>
+        </div>
+
+        <div class="arena-divider-badge">VS</div>
+
+        <div class="player-panel p2">
+            <div class="player-topbar">
+                <span class="player-name">🔴 Играч 2</span>
+                <span class="player-stat">Точки: <b id="score-2">0</b></span>
+                <span class="player-stat">Верни: <b id="correct-count-2">0</b></span>
+                <span class="player-stat">Грешни: <b id="incorrect-count-2">0</b></span>
+            </div>
+            <div class="sky">
+                <div class="sun"></div>
+            </div>
+            <div class="land">
+                <div class="question-board"><span id="current-question-2">...</span></div>
+                <div class="fishing-rod" id="rod-2">
+                    <div class="fishing-line"></div>
+                    <div class="fishing-bobber"></div>
+                </div>
+                <div class="fisherman anim-idle" id="fisherman-2" aria-label="Рибар 2">
+                    <div class="fisherman-figure" aria-hidden="true">
+                        <div class="fisher-hat-top"></div>
+                        <div class="fisher-hat-brim"></div>
+                        <div class="fisher-head"><span class="fisher-face">🙂</span></div>
+                        <div class="fisher-neck"></div>
+                        <div class="fisher-body"></div>
+                        <div class="fisher-arm fisher-arm-left"></div>
+                        <div class="fisher-arm fisher-arm-right"></div>
+                        <div class="fisher-leg fisher-leg-left"></div>
+                        <div class="fisher-leg fisher-leg-right"></div>
+                        <div class="fisher-boot fisher-boot-left"></div>
+                        <div class="fisher-boot fisher-boot-right"></div>
+                    </div>
+                </div>
+                <div class="bank"></div>
+            </div>
+            <div class="water-container">
+                <div class="wave1 wave-layer"></div>
+                <div class="wave2 wave-layer"></div>
+                <div class="water" id="water-2"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="message-overlay">
+    <div id="message-box">
+        <h2 id="message-title" class="font-bold text-blue-600">Времето изтече!</h2>
+        <div id="message-text"></div>
+        <button class="btn" onclick="resetGame()" style="font-size: 1.15rem; padding: 12px 26px;">Играй отново</button>
+    </div>
+</div>
+
+<script>
+    const fishEmojis = ['🐟', '🐠', '🐡', '🦈', '🐬'];
+
+    // Обща скорост за двамата играчи (споделена настройка)
+    const SPEED_LEVELS = { slow: 1.4, normal: 1.0, fast: 0.62 };
+    let currentSpeedKey = localStorage.getItem('ribolov-speed') || 'normal';
+    if (!SPEED_LEVELS[currentSpeedKey]) currentSpeedKey = 'normal';
+    let speedMultiplier = SPEED_LEVELS[currentSpeedKey];
+
+    let timeLeft = 120;
+    let gameTimerInterval;
+    let isGameOver = false;
+    let resizeTimer;
+
+    function getResponsiveGameConfig(waterEl) {
+        const width = (waterEl && waterEl.clientWidth) || 260;
+        const height = (waterEl && waterEl.clientHeight) || 180;
+        const isCompact = width <= 220 || height <= 150;
+        const isMedium = width <= 420;
+
+        let base;
+        if (isCompact) {
+            base = { maxFishes: 3, minDuration: 9, maxDuration: 16, spawnDelay: 2000 };
+        } else if (isMedium) {
+            base = { maxFishes: 4, minDuration: 8, maxDuration: 15, spawnDelay: 1750 };
+        } else {
+            base = { maxFishes: 5, minDuration: 7, maxDuration: 18, spawnDelay: 1550 };
+        }
+
+        return {
+            maxFishes: base.maxFishes,
+            minDuration: base.minDuration * speedMultiplier,
+            maxDuration: base.maxDuration * speedMultiplier,
+            spawnDelay: Math.round(base.spawnDelay * speedMultiplier)
+        };
+    }
+
+    function updateSpeedButtons() {
+        ['slow', 'normal', 'fast'].forEach((key) => {
+            const btn = document.getElementById('speed-' + key);
+            if (btn) btn.classList.toggle('active', key === currentSpeedKey);
+        });
+    }
+
+    function createPlayer(id) {
+        const state = {
+            currentCorrectAnswers: [],
+            currentMode: '',
+            score: 0,
+            correctAnswers: 0,
+            incorrectAnswers: 0,
+            spawnInterval: null,
+            fishSpeedConfig: { minDuration: 8, maxDuration: 18, spawnDelay: 1600, maxFishes: 5 },
+            reactionTimeout: null
+        };
+
+        const els = {
+            fisherman: document.getElementById('fisherman-' + id),
+            rod: document.getElementById('rod-' + id),
+            water: document.getElementById('water-' + id),
+            question: document.getElementById('current-question-' + id),
+            score: document.getElementById('score-' + id),
+            correctCount: document.getElementById('correct-count-' + id),
+            incorrectCount: document.getElementById('incorrect-count-' + id)
+        };
+        els.fishermanFace = els.fisherman.querySelector('.fisher-face');
+
+        function applyResponsiveSettings() {
+            state.fishSpeedConfig = getResponsiveGameConfig(els.water);
+            while (els.water.children.length > state.fishSpeedConfig.maxFishes) {
+                els.water.removeChild(els.water.lastElementChild);
+            }
+        }
+
+        function restartSpawnInterval() {
+            if (state.spawnInterval) clearInterval(state.spawnInterval);
+            state.spawnInterval = setInterval(checkAndSpawnFishes, state.fishSpeedConfig.spawnDelay);
+        }
+
+        function generateNewQuestion() {
+            const a = Math.floor(Math.random() * 9) + 2;
+            const b = Math.floor(Math.random() * 9) + 2;
+            const prod = a * b;
+
+            if (Math.random() > 0.5) {
+                state.currentMode = 'product';
+                els.question.innerHTML = `${a} × ${b}`;
+                state.currentCorrectAnswers = [prod.toString()];
+            } else {
+                state.currentMode = 'factors';
+                els.question.innerHTML = prod.toString();
+                state.currentCorrectAnswers = [];
+                for (let i = 2; i <= 10; i++) {
+                    for (let j = 2; j <= 10; j++) {
+                        if (i * j === prod) state.currentCorrectAnswers.push(`${i} × ${j}`);
+                    }
+                }
+            }
+        }
+
+        function createFish(forceCorrectAnswer = false) {
+            const fish = document.createElement('div');
+            const isSwimmingRight = Math.random() > 0.5;
+            fish.className = `fish ${isSwimmingRight ? 'swimming-right' : 'swimming-left'}`;
+            const fishEmoji = fishEmojis[Math.floor(Math.random() * fishEmojis.length)];
+
+            let fishValue;
+            if (forceCorrectAnswer) {
+                fishValue = state.currentCorrectAnswers[Math.floor(Math.random() * state.currentCorrectAnswers.length)];
+            } else {
+                if (Math.random() < 0.35) {
+                    fishValue = state.currentCorrectAnswers[Math.floor(Math.random() * state.currentCorrectAnswers.length)];
+                } else {
+                    if (state.currentMode === 'product') {
+                        let wrongProd = parseInt(state.currentCorrectAnswers[0]);
+                        while (state.currentCorrectAnswers.includes(wrongProd.toString())) {
+                            let wa = Math.floor(Math.random() * 9) + 2;
+                            let wb = Math.floor(Math.random() * 9) + 2;
+                            wrongProd = wa * wb;
+                            if (Math.random() > 0.5) wrongProd = parseInt(state.currentCorrectAnswers[0]) + (Math.floor(Math.random() * 5) - 2) * 2;
+                            if (wrongProd <= 0) wrongProd = 4;
+                        }
+                        fishValue = wrongProd.toString();
+                    } else {
+                        let wrongStr = state.currentCorrectAnswers[0];
+                        while (state.currentCorrectAnswers.includes(wrongStr)) {
+                            let wa = Math.floor(Math.random() * 9) + 2;
+                            let wb = Math.floor(Math.random() * 9) + 2;
+                            wrongStr = `${wa} × ${wb}`;
+                        }
+                        fishValue = wrongStr;
+                    }
+                }
+            }
+
+            fish.innerHTML = `
+                <div class="fish-body">${fishEmoji}</div>
+                <div class="fish-value">${fishValue}</div>
+            `;
+
+            const topPos = 5 + Math.random() * 65;
+            fish.style.top = `${topPos}%`;
+
+            const containerWidth = els.water.clientWidth || 260;
+            const duration = state.fishSpeedConfig.minDuration + Math.random() * (state.fishSpeedConfig.maxDuration - state.fishSpeedConfig.minDuration);
+            const travelPadding = Math.max(70, Math.min(160, containerWidth * 0.32));
+            const startX = isSwimmingRight ? -travelPadding : containerWidth + travelPadding / 2;
+            const endX = isSwimmingRight ? containerWidth + travelPadding / 2 : -travelPadding;
+
+            const animation = fish.animate([
+                { transform: `translateX(${startX}px)` },
+                { transform: `translateX(${endX}px)` }
+            ], { duration: duration * 1000, iterations: 1, easing: 'linear' });
+
+            fish.addEventListener('pointerdown', (e) => {
+                e.preventDefault();
+                catchFish(fish, fishValue, animation);
+            });
+
+            animation.onfinish = () => { if (els.water.contains(fish)) els.water.removeChild(fish); };
+
+            els.water.appendChild(fish);
+            return fish;
+        }
+
+        function catchFish(fishElement, value, animation) {
+            if (isGameOver || fishElement.dataset.caught === 'true') return;
+            fishElement.dataset.caught = 'true';
+            animation.pause();
+
+            fishElement.style.transform = `${fishElement.style.transform} translateY(-24px) scale(1.3) rotate(25deg)`;
+            fishElement.style.transition = 'transform 0.2s, opacity 0.2s';
+            fishElement.style.opacity = '0';
+
+            els.rod.classList.add('catching');
+            setTimeout(() => els.rod.classList.remove('catching'), 200);
+
+            setTimeout(() => { if (els.water.contains(fishElement)) els.water.removeChild(fishElement); }, 200);
+
+            if (state.currentCorrectAnswers.includes(value)) {
+                updateScore(10);
+                state.correctAnswers++;
+                updateStats();
+                animateStatElement(els.correctCount, '#4CAF50');
+                reactFisherman('happy');
+                generateNewQuestion();
+                setTimeout(() => createFish(true), 400);
+            } else {
+                updateScore(-5);
+                state.incorrectAnswers++;
+                updateStats();
+                animateStatElement(els.incorrectCount, '#F44336');
+                reactFisherman('sad');
+            }
+        }
+
+        function animateStatElement(el, color) {
+            el.style.transform = 'scale(1.7)';
+            el.style.color = color;
+            setTimeout(() => { el.style.transform = 'scale(1)'; el.style.color = ''; }, 300);
+        }
+
+        function updateScore(points) {
+            state.score += points;
+            els.score.innerText = state.score;
+            els.score.style.color = points > 0 ? '#C8E6C9' : (points < 0 ? '#FFCDD2' : '');
+            els.score.style.transform = 'scale(1.5)';
+            setTimeout(() => { els.score.style.transform = 'scale(1)'; els.score.style.color = ''; }, 300);
+        }
+
+        function updateStats() {
+            els.correctCount.innerText = state.correctAnswers;
+            els.incorrectCount.innerText = state.incorrectAnswers;
+        }
+
+        function reactFisherman(type) {
+            clearTimeout(state.reactionTimeout);
+            els.fisherman.className = '';
+            if (type === 'happy') {
+                if (els.fishermanFace) els.fishermanFace.textContent = '😄';
+                els.fisherman.classList.add('anim-happy');
+            } else if (type === 'sad') {
+                if (els.fishermanFace) els.fishermanFace.textContent = '😟';
+                els.fisherman.classList.add('anim-sad');
+            }
+            state.reactionTimeout = setTimeout(resetFisherman, 1000);
+        }
+
+        function resetFisherman() {
+            if (els.fishermanFace) els.fishermanFace.textContent = '🙂';
+            els.fisherman.className = 'anim-idle';
+        }
+
+        function spawnInitialFishes() {
+            for (let i = 0; i < state.fishSpeedConfig.maxFishes; i++) {
+                setTimeout(() => createFish(i === 0), i * 600);
+            }
+        }
+
+        function checkAndSpawnFishes() {
+            if (els.water.children.length < state.fishSpeedConfig.maxFishes && !isGameOver) createFish();
+        }
+
+        function reset() {
+            state.score = 0;
+            state.correctAnswers = 0;
+            state.incorrectAnswers = 0;
+            updateScore(0);
+            updateStats();
+            els.water.innerHTML = '';
+            generateNewQuestion();
+            applyResponsiveSettings();
+            spawnInitialFishes();
+            resetFisherman();
+            restartSpawnInterval();
+        }
+
+        function stop() {
+            if (state.spawnInterval) clearInterval(state.spawnInterval);
+            els.water.innerHTML = '';
+            resetFisherman();
+        }
+
+        return {
+            reset, stop, applyResponsiveSettings, restartSpawnInterval,
+            getScore: () => state.score,
+            getCorrect: () => state.correctAnswers,
+            getIncorrect: () => state.incorrectAnswers
+        };
+    }
+
+    const player1 = createPlayer(1);
+    const player2 = createPlayer(2);
+    const players = [player1, player2];
+
+    function setSpeed(level) {
+        if (!SPEED_LEVELS[level]) return;
+        currentSpeedKey = level;
+        speedMultiplier = SPEED_LEVELS[level];
+        try { localStorage.setItem('ribolov-speed', level); } catch (e) { /* игнорирай */ }
+        updateSpeedButtons();
+        players.forEach((p) => { p.applyResponsiveSettings(); p.restartSpawnInterval(); });
+    }
+
+    function initGame() {
+        updateSpeedButtons();
+        isGameOver = false;
+        timeLeft = 120;
+        const timerEl = document.getElementById('timer');
+        timerEl.innerText = timeLeft;
+        timerEl.style.color = '';
+        closeMessage();
+
+        players.forEach((p) => p.reset());
+
+        if (gameTimerInterval) clearInterval(gameTimerInterval);
+        gameTimerInterval = setInterval(updateGameTimer, 1000);
+    }
+
+    function updateGameTimer() {
+        if (isGameOver) return;
+        timeLeft--;
+        const timerEl = document.getElementById('timer');
+        timerEl.innerText = timeLeft;
+        if (timeLeft <= 10) timerEl.style.color = '#F44336';
+        if (timeLeft <= 0) endGame();
+    }
+
+    function endGame() {
+        isGameOver = true;
+        clearInterval(gameTimerInterval);
+        players.forEach((p) => p.stop());
+
+        const s1 = player1.getScore();
+        const s2 = player2.getScore();
+
+        let winnerHtml;
+        if (s1 === s2) winnerHtml = `<span class="winner-line">🤝 Равен резултат!</span>`;
+        else if (s1 > s2) winnerHtml = `<span class="winner-line">🏆 Играч 1 печели!</span>`;
+        else winnerHtml = `<span class="winner-line">🏆 Играч 2 печели!</span>`;
+
+        const statsHtml = `
+            ${winnerHtml}
+            <div class="duel-results">
+                <div class="result-col result-1">
+                    <div class="result-name">🔵 Играч 1</div>
+                    <div>Точки: <b>${s1}</b></div>
+                    <div>Верни: <b class="text-green-600">${player1.getCorrect()}</b></div>
+                    <div>Грешни: <b class="text-red-600">${player1.getIncorrect()}</b></div>
+                </div>
+                <div class="result-col result-2">
+                    <div class="result-name">🔴 Играч 2</div>
+                    <div>Точки: <b>${s2}</b></div>
+                    <div>Верни: <b class="text-green-600">${player2.getCorrect()}</b></div>
+                    <div>Грешни: <b class="text-red-600">${player2.getIncorrect()}</b></div>
+                </div>
+            </div>
+        `;
+        showMessage("Времето изтече!", statsHtml);
+    }
+
+    function showMessage(title, textHtml) {
+        const overlay = document.getElementById('message-overlay');
+        document.getElementById('message-title').innerText = title;
+        document.getElementById('message-text').innerHTML = textHtml;
+        overlay.classList.add('active');
+    }
+
+    function closeMessage() {
+        document.getElementById('message-overlay').classList.remove('active');
+    }
+
+    window.resetGame = function () { initGame(); };
+    window.setSpeed = setSpeed;
+
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            players.forEach((p) => { p.applyResponsiveSettings(); p.restartSpawnInterval(); });
+        }, 180);
+    });
+
+    window.addEventListener('orientationchange', () => {
+        setTimeout(() => {
+            players.forEach((p) => { p.applyResponsiveSettings(); p.restartSpawnInterval(); });
+        }, 250);
+    });
+
+    window.onload = function () {
+        initGame();
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch((err) => {
+                console.warn('Service worker registration failed:', err);
+            });
+        }
+    };
+</script>
+
+</body>
+</html>
