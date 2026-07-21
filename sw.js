@@ -1,11 +1,11 @@
-const CACHE_NAME = 'ribolov-umnozhenie-v9';
+const CACHE_NAME = 'ribolov-umnozhenie-v10';
 const APP_FILES = [
   './',
   './index.html',
   './manifest.webmanifest',
-  './icons/icon-192.png',
-  './icons/icon-512.png',
-  './icons/icon-maskable-512.png'
+  './icons/icon-192-v2.png',
+  './icons/icon-512-v2.png',
+  './icons/icon-maskable-512-v2.png'
 ];
 
 self.addEventListener('install', (event) => {

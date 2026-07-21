@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Риболов с Умножение</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192-v2.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512-v2.png">
+    <link rel="apple-touch-icon" href="icons/icon-192-v2.png">
+    <meta name="theme-color" content="#0288D1">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body, html {
@@ -1350,6 +1355,11 @@
 
         window.onload = function() {
             initGame();
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js').catch((err) => {
+                    console.warn('Service worker registration failed:', err);
+                });
+            }
         };
 
     </script>
