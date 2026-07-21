@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ribolov-umnozhenie-v13';
+const CACHE_NAME = 'ribolov-umnozhenie-v14';
 const APP_FILES = [
   './',
   './index.html',
