@@ -3,14 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#0288D1">
-    <meta name="description" content="Образователна игра за упражняване на таблицата за умножение">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Риболов с умножение">
-    <link rel="manifest" href="manifest.webmanifest">
-    <link rel="icon" href="icons/icon-192.png" sizes="192x192">
-    <link rel="apple-touch-icon" href="icons/icon-192.png">
     <title>Риболов с Умножение</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -159,71 +151,9 @@
 
         #water {
             height: 100%;
-            background:
-                radial-gradient(ellipse at 18% 18%, rgba(129,212,250,.18) 0 2%, transparent 9%),
-                radial-gradient(ellipse at 72% 42%, rgba(79,195,247,.13) 0 2%, transparent 10%),
-                linear-gradient(to bottom, #0288D1, #01579B);
+            background: linear-gradient(to bottom, #0288D1, #01579B);
             position: relative;
             overflow: hidden;
-        }
-
-        #river-ripples {
-            position: absolute;
-            inset: 0;
-            z-index: 18;
-            overflow: hidden;
-            pointer-events: none;
-        }
-
-        #river-ripples::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            opacity: .13;
-            background-image:
-                repeating-radial-gradient(ellipse at 20% 25%, transparent 0 28px, rgba(179,229,252,.28) 29px 31px, transparent 32px 67px),
-                repeating-radial-gradient(ellipse at 75% 68%, transparent 0 38px, rgba(79,195,247,.22) 39px 41px, transparent 42px 82px);
-            animation: waterShimmer 12s linear infinite alternate;
-        }
-
-        .river-ripple {
-            position: absolute;
-            left: var(--x);
-            top: var(--y);
-            width: var(--w);
-            height: clamp(10px, 2dvh, 19px);
-            border-top: 2px solid rgba(225,247,250,.68);
-            border-radius: 50%;
-            opacity: 0;
-            filter: drop-shadow(0 2px 1px rgba(1,87,155,.25));
-            animation: rippleGlide var(--speed) ease-in-out var(--delay) infinite;
-        }
-
-        .river-ripple::after {
-            content: '';
-            position: absolute;
-            left: 22%;
-            top: 5px;
-            width: 58%;
-            height: 9px;
-            border-top: 2px solid rgba(179,229,252,.58);
-            border-radius: 50%;
-        }
-
-        @keyframes rippleGlide {
-            0% { opacity: 0; transform: translateX(-18px) scaleX(.65); }
-            18% { opacity: .72; }
-            55% { opacity: .9; transform: translateX(12px) scaleX(1.12); }
-            100% { opacity: 0; transform: translateX(42px) scaleX(1.38); }
-        }
-
-        @keyframes waterShimmer {
-            from { transform: translate3d(-18px, -7px, 0) scale(1); }
-            to { transform: translate3d(25px, 12px, 0) scale(1.06); }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .river-ripple, #river-ripples::before { animation: none; opacity: .42; }
         }
 
         @keyframes moveWaves {
@@ -464,7 +394,7 @@
             border-radius: 3px;
         }
 
-        .fishing-rod.catching { transform: rotate(-80deg); }
+        .fishing-rod.catching { transform: rotate(15deg); }
 
         .fishing-line {
             position: absolute;
@@ -486,132 +416,6 @@
             background: red;
             border-radius: 4px;
             border-bottom: 6px solid white;
-        }
-
-        /* Сцена на улова: седнал рибар, подвижна въдица и живарник */
-        #fisherman {
-            bottom: -38px;
-            right: 18%;
-            z-index: 27;
-        }
-
-        .fisher-seat {
-            position: absolute;
-            left: 14%;
-            bottom: 10%;
-            width: 72%;
-            height: 16%;
-            border-radius: 50%;
-            background: linear-gradient(#9E9E9E, #455A64);
-            border: 2px solid rgba(38, 50, 56, 0.75);
-            z-index: 0;
-        }
-
-        .fisher-leg-left { transform: rotate(48deg); left: 35%; }
-        .fisher-leg-right { transform: rotate(-48deg); right: 35%; }
-
-        .fishing-rod {
-            bottom: -5px;
-            right: calc(18% + 52px);
-            transform: rotate(-55deg);
-            z-index: 26;
-            transition: transform 0.65s cubic-bezier(0.2, 0.9, 0.25, 1.2);
-        }
-
-        .fishing-line {
-            top: 0;
-            right: 50%;
-            height: clamp(105px, 22dvh, 185px);
-            transform: rotate(55deg);
-            transform-origin: top center;
-            transition: height 0.55s ease, transform 0.55s ease;
-        }
-
-        .fishing-rod.catching .fishing-line {
-            height: 38px;
-            transform: rotate(80deg);
-        }
-
-        .fishing-bobber { display: none; }
-
-        #hook-target {
-            position: absolute;
-            left: 50%;
-            bottom: -5px;
-            width: 9px;
-            height: 9px;
-            transform: translateX(-50%);
-            border: 2px solid #ECEFF1;
-            border-top: 0;
-            border-radius: 0 0 8px 8px;
-        }
-
-        #fish-basket {
-            position: absolute;
-            right: clamp(8px, 4vw, 58px);
-            top: clamp(28px, 12%, 70px);
-            width: clamp(82px, 10vw, 124px);
-            height: clamp(62px, 13dvh, 96px);
-            z-index: 31;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-end;
-            padding: 25px 7px 8px;
-            border: 4px solid #6D4C41;
-            border-top-width: 8px;
-            border-radius: 10px 10px 35% 35%;
-            background: repeating-linear-gradient(45deg, rgba(255,255,255,.18) 0 7px, rgba(0,0,0,.08) 7px 14px), rgba(121,85,72,.88);
-            box-shadow: 0 7px 12px rgba(0,0,0,.3);
-            color: white;
-        }
-
-        #fish-basket::before {
-            content: '';
-            position: absolute;
-            width: 74%;
-            height: 34px;
-            top: -27px;
-            border: 5px solid #5D4037;
-            border-bottom: 0;
-            border-radius: 50% 50% 0 0;
-        }
-
-        .basket-label {
-            position: absolute;
-            top: 3px;
-            font-size: clamp(.58rem, 1.2vw, .78rem);
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: .04em;
-        }
-
-        #basket-fish {
-            min-height: 25px;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: center;
-            gap: 1px;
-            font-size: clamp(.9rem, 1.7vw, 1.25rem);
-            line-height: 1;
-        }
-
-        .catch-flight {
-            position: fixed;
-            z-index: 90;
-            pointer-events: none;
-            font-size: clamp(2.8rem, 7vw, 4.5rem);
-            line-height: 1;
-            filter: drop-shadow(0 5px 5px rgba(0,0,0,.45));
-            will-change: transform, opacity;
-        }
-
-        .install-btn {
-            display: inline-flex;
-            margin-left: 8px;
-            background: linear-gradient(to bottom, #66BB6A, #2E7D32);
-            border-color: #1B5E20;
         }
 
         .fish {
@@ -703,6 +507,39 @@
         }
 
         .btn:hover { background: linear-gradient(to bottom, #26C6DA, #0097A7); transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.3); }
+
+        #speed-selector {
+            display: flex;
+            justify-content: flex-end;
+            gap: 6px;
+            margin-top: 8px;
+            background-color: rgba(255,255,255,0.95);
+            padding: 6px 8px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            border: 2px solid #E0F7FA;
+        }
+
+        .speed-btn {
+            background: linear-gradient(to bottom, #FFFFFF, #E0F7FA);
+            border: 2px solid #00838F;
+            color: #00636E;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            touch-action: manipulation;
+        }
+
+        .speed-btn:hover { background: linear-gradient(to bottom, #B2EBF2, #80DEEA); }
+
+        .speed-btn.active {
+            background: linear-gradient(to bottom, #4DD0E1, #00838F);
+            color: white;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+        }
 
         /* End Game Overlay */
         #message-overlay {
@@ -862,6 +699,17 @@
             touch-action: manipulation;
         }
 
+        #speed-selector {
+            padding: clamp(4px, 0.8vw, 6px) clamp(5px, 1vw, 8px);
+            gap: clamp(3px, 0.7vw, 6px);
+        }
+
+        .speed-btn {
+            min-height: 34px;
+            padding: clamp(4px, 0.8vw, 6px) clamp(7px, 1.4vw, 12px);
+            font-size: clamp(0.62rem, 1.3vw, 0.85rem);
+        }
+
         #fisherman {
             width: clamp(54px, 8.2vw, 82px);
             height: clamp(86px, 15.5dvh, 128px);
@@ -962,7 +810,7 @@
             #fisherman {
                 width: clamp(44px, 13vw, 60px);
                 height: clamp(70px, 18dvh, 96px);
-                bottom: -25px;
+                bottom: 4px;
                 right: clamp(10%, 22vw, 28%);
             }
 
@@ -987,6 +835,8 @@
             .stat-item { min-width: 104px; }
             #controls { max-width: 112px; }
             .btn { padding-left: 8px; padding-right: 8px; }
+            #speed-selector { flex-wrap: wrap; }
+            .speed-btn { padding: 4px 6px; font-size: 0.6rem; min-height: 28px; }
             #question-board { top: 6px; }
             .sun, .cloud-2, .landscape-deco:nth-of-type(2), .landscape-deco:nth-of-type(6) { display: none; }
         }
@@ -996,9 +846,9 @@
             #land { flex-basis: 92px; min-height: 92px; }
             #water-container { min-height: 120px; }
             #question-board { font-size: clamp(1.35rem, 4.6dvh, 2.05rem); top: 5px; }
-            #fisherman { width: clamp(38px, 10dvh, 52px); height: clamp(58px, 18dvh, 78px); bottom: -20px; }
-            .fishing-rod { height: 76px; bottom: -2px; }
-            .fishing-line { height: 86px; top: 0; }
+            #fisherman { width: clamp(38px, 10dvh, 52px); height: clamp(58px, 18dvh, 78px); bottom: 3px; }
+            .fishing-rod { height: 76px; bottom: 28px; }
+            .fishing-line { height: 86px; top: -86px; }
             .fishing-bobber { top: -91px; }
             .fish { width: 92px; height: 54px; }
             .fish-body { font-size: 3.4rem; }
@@ -1015,51 +865,6 @@
             #question-board { max-width: 520px; }
         }
 
-        /* Финално позициониране на риболовната сцена след responsive правилата */
-        #fisherman {
-            bottom: -34px !important;
-            right: 18% !important;
-        }
-
-        .fishing-rod {
-            width: clamp(120px, 16vw, 190px) !important;
-            height: 6px !important;
-            bottom: 18px !important;
-            right: calc(18% + 18px) !important;
-            transform: rotate(15deg);
-            transform-origin: right center;
-        }
-
-        .fishing-rod.catching { transform: rotate(38deg); }
-
-        #cast-line {
-            position: absolute;
-            top: 62%;
-            right: 34%;
-            width: 2px;
-            height: calc(100% + 18px);
-            background: rgba(255,255,255,.88);
-            transform: none;
-            transform-origin: top center;
-            z-index: 25;
-            box-shadow: 0 0 3px rgba(255,255,255,.8);
-            transition: height .55s ease, top .55s ease, right .55s ease;
-        }
-
-        .fishing-rod.catching + #cast-line {
-            top: 30%;
-            right: 34%;
-            height: 44px;
-        }
-
-        @media (max-width: 640px) {
-            #fisherman { bottom: -22px !important; right: 14% !important; }
-            .fishing-rod { width: clamp(86px, 27vw, 125px) !important; bottom: 12px !important; right: calc(14% + 12px) !important; }
-            #cast-line { top: 58%; right: 39%; height: calc(100% + 5px); }
-            #fish-basket { right: 5px; transform: scale(.82); transform-origin: top right; }
-            .install-btn { margin-left: 4px; }
-        }
-
     </style>
 </head>
 <body>
@@ -1069,14 +874,17 @@
         <div id="stats-board">
             <div class="stat-item text-blue-700"><span class="text-base uppercase">Време:</span> <span id="timer">180</span></div>
             <div class="stat-item"><span class="text-base uppercase">Точки:</span> <span id="score">0</span></div>
-            <div class="stat-item text-amber-600" title="До 2 сек: +10; до 4 сек: +7; до 6 сек: +5; до 9 сек: +3"><span class="text-base uppercase">Бързина:</span> <span id="speed-bonus">+0</span></div>
             <div class="stat-item text-green-600"><span class="text-base uppercase">Верни:</span> <span id="correct-count">0</span></div>
             <div class="stat-item text-red-600"><span class="text-base uppercase">Грешни:</span> <span id="incorrect-count">0</span></div>
         </div>
         
         <div id="controls">
             <button class="btn" onclick="resetGame()">Нова Игра</button>
-            <button class="btn install-btn" id="install-btn" type="button">⬇ Инсталирай</button>
+            <div id="speed-selector" role="group" aria-label="Скорост на рибите">
+                <button class="speed-btn" id="speed-slow" onclick="setSpeed('slow')">Бавно</button>
+                <button class="speed-btn" id="speed-normal" onclick="setSpeed('normal')">Средно</button>
+                <button class="speed-btn" id="speed-fast" onclick="setSpeed('fast')">Бързо</button>
+            </div>
         </div>
 
         <div id="sky">
@@ -1100,14 +908,13 @@
             </div>
             
             <div class="fishing-rod" id="rod">
+                <div class="fishing-line"></div>
                 <div class="fishing-bobber"></div>
             </div>
-            <div class="fishing-line" id="cast-line"><div id="hook-target"></div></div>
             
             <!-- Рибарят -->
             <div id="fisherman" class="anim-idle" aria-label="Рибар">
                 <div class="fisherman-figure" aria-hidden="true">
-                    <div class="fisher-seat"></div>
                     <div class="fisher-hat-top"></div>
                     <div class="fisher-hat-brim"></div>
                     <div class="fisher-head"><span class="fisher-face">🙂</span></div>
@@ -1130,20 +937,6 @@
             <div id="wave2" class="wave-layer"></div>
             <div id="water">
                 <!-- Рибите се генерират тук -->
-            </div>
-            <div id="river-ripples" aria-hidden="true">
-                <span class="river-ripple" style="--x:6%;--y:13%;--w:92px;--speed:5.2s;--delay:-1.4s"></span>
-                <span class="river-ripple" style="--x:28%;--y:29%;--w:128px;--speed:6.1s;--delay:-4.2s"></span>
-                <span class="river-ripple" style="--x:55%;--y:12%;--w:82px;--speed:4.7s;--delay:-2.8s"></span>
-                <span class="river-ripple" style="--x:78%;--y:35%;--w:116px;--speed:5.8s;--delay:-.9s"></span>
-                <span class="river-ripple" style="--x:14%;--y:58%;--w:135px;--speed:6.4s;--delay:-3.6s"></span>
-                <span class="river-ripple" style="--x:43%;--y:70%;--w:104px;--speed:5.5s;--delay:-1.9s"></span>
-                <span class="river-ripple" style="--x:68%;--y:61%;--w:144px;--speed:6.8s;--delay:-5.1s"></span>
-                <span class="river-ripple" style="--x:88%;--y:78%;--w:76px;--speed:4.9s;--delay:-2.2s"></span>
-            </div>
-            <div id="fish-basket" aria-label="Живарник за уловените риби">
-                <div class="basket-label">Живарник</div>
-                <div id="basket-fish"></div>
             </div>
         </div>
 
@@ -1174,16 +967,10 @@
         const fishermanEl = document.getElementById('fisherman');
         const fishermanFaceEl = fishermanEl.querySelector('.fisher-face');
         const rodEl = document.getElementById('rod');
-        const basketEl = document.getElementById('fish-basket');
-        const basketFishEl = document.getElementById('basket-fish');
-        const installButton = document.getElementById('install-btn');
-        let deferredInstallPrompt = null;
 
         let currentCorrectAnswers = [];
         let currentMode = '';
         let score = 0;
-        let speedBonusTotal = 0;
-        let questionStartedAt = 0;
         let correctAnswers = 0;
         let incorrectAnswers = 0;
         let timeLeft = 180;
@@ -1194,6 +981,12 @@
         let maxFishesOnScreen = 8;
         let fishSpeedConfig = { minDuration: 8, maxDuration: 22, spawnDelay: 1500 };
         let resizeTimer;
+
+        // Скорост на рибите: по-малък коефициент = по-бързи риби
+        const SPEED_LEVELS = { slow: 1.4, normal: 1.0, fast: 0.62 };
+        let currentSpeedKey = localStorage.getItem('ribolov-speed') || 'normal';
+        if (!SPEED_LEVELS[currentSpeedKey]) currentSpeedKey = 'normal';
+        let speedMultiplier = SPEED_LEVELS[currentSpeedKey];
         const waterElement = document.getElementById('water');
         const questionElement = document.getElementById('current-question');
         const scoreElement = document.getElementById('score');
@@ -1207,13 +1000,38 @@
             const isCompactPhone = width <= 480 || height <= 520;
             const isTabletOrSmallLaptop = width <= 1024;
 
+            let base;
             if (isCompactPhone) {
-                return { maxFishes: 5, minDuration: 10, maxDuration: 18, spawnDelay: 1850 };
+                base = { maxFishes: 5, minDuration: 10, maxDuration: 18, spawnDelay: 1850 };
+            } else if (isTabletOrSmallLaptop) {
+                base = { maxFishes: 6, minDuration: 9, maxDuration: 17, spawnDelay: 1650 };
+            } else {
+                base = { maxFishes: 8, minDuration: 8, maxDuration: 22, spawnDelay: 1500 };
             }
-            if (isTabletOrSmallLaptop) {
-                return { maxFishes: 6, minDuration: 9, maxDuration: 17, spawnDelay: 1650 };
-            }
-            return { maxFishes: 8, minDuration: 8, maxDuration: 22, spawnDelay: 1500 };
+
+            return {
+                maxFishes: base.maxFishes,
+                minDuration: base.minDuration * speedMultiplier,
+                maxDuration: base.maxDuration * speedMultiplier,
+                spawnDelay: Math.round(base.spawnDelay * speedMultiplier)
+            };
+        }
+
+        function setSpeed(level) {
+            if (!SPEED_LEVELS[level]) return;
+            currentSpeedKey = level;
+            speedMultiplier = SPEED_LEVELS[level];
+            try { localStorage.setItem('ribolov-speed', level); } catch (e) { /* игнорирай, ако няма достъп */ }
+            updateSpeedButtons();
+            applyResponsiveGameSettings();
+            restartSpawnInterval();
+        }
+
+        function updateSpeedButtons() {
+            ['slow', 'normal', 'fast'].forEach((key) => {
+                const btn = document.getElementById('speed-' + key);
+                if (btn) btn.classList.toggle('active', key === currentSpeedKey);
+            });
         }
 
         function applyResponsiveGameSettings() {
@@ -1231,10 +1049,9 @@
         }
 
         function initGame() {
+            updateSpeedButtons();
             applyResponsiveGameSettings();
             score = 0;
-            speedBonusTotal = 0;
-            questionStartedAt = 0;
             correctAnswers = 0;
             incorrectAnswers = 0;
             timeLeft = 180;
@@ -1242,12 +1059,10 @@
             
             updateScore(0);
             updateStats();
-            updateSpeedBonus(0);
             document.getElementById('timer').innerText = timeLeft;
             document.getElementById('timer').style.color = '';
             
             waterElement.innerHTML = '';
-            basketFishEl.innerHTML = '';
             generateNewQuestion();
             spawnInitialFishes();
             closeMessage();
@@ -1303,7 +1118,6 @@
             
             const statsHtml = `
                 <span>🏆 Общо Точки: <b class="text-blue-600">${score}</b></span>
-                <span>⚡ Бонус за бързина: <b class="text-amber-600">${speedBonusTotal}</b></span>
                 <span>✅ Верни улови: <b class="text-green-600">${correctAnswers}</b></span>
                 <span>❌ Изпуснати риби: <b class="text-red-600">${incorrectAnswers}</b></span>
             `;
@@ -1336,27 +1150,6 @@
                     }
                 }
             }
-
-            questionStartedAt = performance.now();
-        }
-
-        function getSpeedBonus(elapsedSeconds) {
-            if (elapsedSeconds <= 2) return 10;
-            if (elapsedSeconds <= 4) return 7;
-            if (elapsedSeconds <= 6) return 5;
-            if (elapsedSeconds <= 9) return 3;
-            return 0;
-        }
-
-        function updateSpeedBonus(points) {
-            const bonusEl = document.getElementById('speed-bonus');
-            bonusEl.innerText = `+${points}`;
-            bonusEl.style.color = points > 0 ? '#F59E0B' : '';
-            bonusEl.style.transform = points > 0 ? 'scale(1.6)' : 'scale(1)';
-            setTimeout(() => {
-                bonusEl.style.transform = 'scale(1)';
-                bonusEl.style.color = '';
-            }, 500);
         }
 
         function createFish(forceCorrectAnswer = false) {
@@ -1418,7 +1211,7 @@
 
             fish.addEventListener('pointerdown', (e) => {
                 e.preventDefault();
-                catchFish(fish, fishValue, animation, fishEmoji);
+                catchFish(fish, fishValue, animation);
             });
 
             animation.onfinish = () => {
@@ -1429,75 +1222,27 @@
             return fish;
         }
 
-        function animateFishToBasket(fishElement, fishEmoji) {
-            const fishRect = fishElement.getBoundingClientRect();
-            const hookRect = document.getElementById('hook-target').getBoundingClientRect();
-            const basketRect = basketEl.getBoundingClientRect();
-            const flight = document.createElement('div');
-            flight.className = 'catch-flight';
-            flight.textContent = fishEmoji;
-            flight.style.left = `${fishRect.left}px`;
-            flight.style.top = `${fishRect.top}px`;
-            document.body.appendChild(flight);
-
-            const startX = fishRect.left + fishRect.width / 2;
-            const startY = fishRect.top + fishRect.height / 2;
-            const hookX = hookRect.left + hookRect.width / 2 - startX;
-            const hookY = hookRect.top + hookRect.height / 2 - startY;
-            const basketX = basketRect.left + basketRect.width / 2 - startX;
-            const basketY = basketRect.top + basketRect.height / 2 - startY;
-
-            fishElement.remove();
-            rodEl.classList.add('catching');
-
-            const flightAnimation = flight.animate([
-                { transform: 'translate(0, 0) scale(.9) rotate(0deg)', opacity: 1, offset: 0 },
-                { transform: `translate(${hookX}px, ${hookY}px) scale(.82) rotate(-18deg)`, opacity: 1, offset: .48 },
-                { transform: `translate(${hookX}px, ${hookY - 34}px) scale(.78) rotate(12deg)`, opacity: 1, offset: .66 },
-                { transform: `translate(${basketX}px, ${basketY - 28}px) scale(.62) rotate(22deg)`, opacity: 1, offset: .88 },
-                { transform: `translate(${basketX}px, ${basketY}px) scale(.35) rotate(55deg)`, opacity: .2, offset: 1 }
-            ], {
-                duration: 1500,
-                easing: 'cubic-bezier(.2,.75,.2,1)',
-                fill: 'forwards'
-            });
-
-            setTimeout(() => rodEl.classList.remove('catching'), 850);
-            flightAnimation.onfinish = () => {
-                flight.remove();
-                const storedFish = document.createElement('span');
-                storedFish.textContent = fishEmoji;
-                basketFishEl.appendChild(storedFish);
-                while (basketFishEl.children.length > 6) basketFishEl.firstElementChild.remove();
-                basketEl.animate([
-                    { transform: 'scale(1)' },
-                    { transform: 'scale(1.12) rotate(-2deg)' },
-                    { transform: 'scale(1)' }
-                ], { duration: 320 });
-            };
-        }
-
-        function dismissWrongFish(fishElement) {
-            fishElement.style.transition = 'transform 0.25s, opacity 0.25s, filter 0.25s';
-            fishElement.style.transform = `${fishElement.style.transform} translateY(-25px) scale(.75) rotate(18deg)`;
-            fishElement.style.filter = 'grayscale(1) drop-shadow(0 0 12px #F44336)';
-            fishElement.style.opacity = '0';
-            setTimeout(() => fishElement.remove(), 260);
-        }
-
-        function catchFish(fishElement, value, animation, fishEmoji) {
+        function catchFish(fishElement, value, animation) {
             if (isGameOver || fishElement.dataset.caught === 'true') return;
             fishElement.dataset.caught = 'true';
 
             animation.pause();
+            
+            // Визуален ефект на самата рибка (дърпане)
+            fishElement.style.transform = `${fishElement.style.transform} translateY(-30px) scale(1.3) rotate(25deg)`;
+            fishElement.style.transition = 'transform 0.2s, opacity 0.2s';
+            fishElement.style.opacity = '0';
+
+            // Движение на въдицата
+            rodEl.classList.add('catching');
+            setTimeout(() => rodEl.classList.remove('catching'), 200);
+            
+            setTimeout(() => {
+                if (waterElement.contains(fishElement)) waterElement.removeChild(fishElement);
+            }, 200);
 
             if (currentCorrectAnswers.includes(value)) {
-                animateFishToBasket(fishElement, fishEmoji);
-                const elapsedSeconds = (performance.now() - questionStartedAt) / 1000;
-                const speedBonus = getSpeedBonus(elapsedSeconds);
-                speedBonusTotal += speedBonus;
-                updateScore(10 + speedBonus);
-                updateSpeedBonus(speedBonus);
+                updateScore(10);
                 correctAnswers++;
                 updateStats();
                 animateStatElement('correct-count', '#4CAF50');
@@ -1507,7 +1252,6 @@
                 setTimeout(() => createFish(true), 400); 
 
             } else {
-                dismissWrongFish(fishElement);
                 updateScore(-5);
                 incorrectAnswers++;
                 updateStats();
@@ -1563,40 +1307,6 @@
         window.resetGame = function() {
              initGame();
         };
-
-        window.addEventListener('beforeinstallprompt', (event) => {
-            event.preventDefault();
-            deferredInstallPrompt = event;
-            installButton.classList.add('ready');
-            installButton.textContent = '⬇ Инсталирай';
-        });
-
-        installButton.addEventListener('click', async () => {
-            if (deferredInstallPrompt) {
-                deferredInstallPrompt.prompt();
-                await deferredInstallPrompt.userChoice;
-                deferredInstallPrompt = null;
-                return;
-            }
-
-            const instruction = location.protocol === 'file:'
-                ? 'За инсталиране отвори играта през защитен уеб адрес (https://) или localhost. Качи цялата папка „Риболов-PWA“ в GitHub Pages.'
-                : 'От менюто на браузъра избери „Инсталиране на приложението“ или „Добавяне към началния екран“.';
-            showMessage('Инсталиране като приложение', `<span>📲 ${instruction}</span>`);
-        });
-
-        window.addEventListener('appinstalled', () => {
-            installButton.style.display = 'none';
-            deferredInstallPrompt = null;
-        });
-
-        if ('serviceWorker' in navigator && location.protocol !== 'file:') {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js').catch((error) => {
-                    console.warn('Service worker registration failed:', error);
-                });
-            });
-        }
 
 
         window.addEventListener('resize', () => {
