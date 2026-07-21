@@ -144,7 +144,20 @@
             position: relative;
         }
 
-        .player-panel.p1 { border-right: 2px solid rgba(0,0,0,0.35); }
+        /* ===== Подредба "Един до друг" (странично, както досега) ===== */
+        #duel-arena.layout-side { flex-direction: row; }
+        #duel-arena.layout-side .player-panel.p1 { border-right: 2px solid rgba(0,0,0,0.35); border-bottom: none; }
+
+        /* ===== Подредба "Лице в лице": телефонът лежи между двамата играчи,
+           горният панел (Играч 1) е завъртян на 180°, за да гледа своята половина
+           изправена, докато седи срещу другия играч. ===== */
+        #duel-arena.layout-face { flex-direction: column; }
+        #duel-arena.layout-face .player-panel.p1 {
+            border-right: none;
+            border-bottom: 3px solid rgba(0,0,0,0.35);
+            transform: rotate(180deg);
+        }
+        #duel-arena.layout-face .arena-divider-badge { display: none; }
 
         .player-topbar {
             flex: 0 0 auto;
@@ -360,9 +373,6 @@
         .result-name { font-weight: 900; margin-bottom: 6px; font-size: clamp(0.9rem, 2.6vw, 1.1rem); }
 
         @media (max-width: 620px) {
-            #duel-arena { flex-direction: column; }
-            .player-panel.p1 { border-right: none; border-bottom: 3px solid rgba(0,0,0,0.35); }
-            .arena-divider-badge { display: none; }
             .duel-title { display: none; }
             #duel-topbar { justify-content: center; }
         }
@@ -382,6 +392,7 @@
         <div id="duel-timer-box">Време: <span id="timer">120</span></div>
         <div id="duel-controls">
             <button class="btn" onclick="resetGame()">Нова игра</button>
+            <button class="btn btn-outline" id="layout-toggle-btn" onclick="toggleLayout()">🔄 Лице в лице</button>
             <a class="btn btn-outline" href="index.html">🎣 1 играч</a>
             <div id="speed-selector" role="group" aria-label="Скорост на рибите">
                 <button class="speed-btn" id="speed-slow" onclick="setSpeed('slow')">Бавно</button>
@@ -391,7 +402,7 @@
         </div>
     </div>
 
-    <div id="duel-arena">
+    <div id="duel-arena" class="layout-side">
         <div class="player-panel p1">
             <div class="player-topbar">
                 <span class="player-name">🔵 Играч 1</span>
@@ -497,6 +508,44 @@
     let gameTimerInterval;
     let isGameOver = false;
     let resizeTimer;
+
+    // ===== Подредба на арената: "лице в лице" (телефонът лежи на маса между
+    // двамата играчи) или "един до друг" (странично). 'auto' избира сама
+    // според ширината на екрана, докато играчът не превключи ръчно. =====
+    let duelLayout = (function () {
+        try {
+            const saved = localStorage.getItem('ribolov-duel-layout');
+            if (saved === 'face' || saved === 'side') return saved;
+        } catch (e) { /* игнорирай */ }
+        return 'auto';
+    })();
+
+    function getEffectiveLayout() {
+        if (duelLayout === 'face' || duelLayout === 'side') return duelLayout;
+        return window.innerWidth <= 620 ? 'face' : 'side';
+    }
+
+    function applyLayout() {
+        const arena = document.getElementById('duel-arena');
+        const effective = getEffectiveLayout();
+        arena.classList.toggle('layout-face', effective === 'face');
+        arena.classList.toggle('layout-side', effective === 'side');
+
+        const btn = document.getElementById('layout-toggle-btn');
+        if (btn) {
+            btn.textContent = effective === 'face' ? '↔️ Един до друг' : '🔄 Лице в лице';
+            btn.title = effective === 'face'
+                ? 'Играч 1 е завъртян на 180° — телефонът лежи между вас на маса'
+                : 'Играчите гледат екрана един до друг, както обикновено';
+        }
+    }
+
+    function toggleLayout() {
+        duelLayout = getEffectiveLayout() === 'face' ? 'side' : 'face';
+        try { localStorage.setItem('ribolov-duel-layout', duelLayout); } catch (e) { /* игнорирай */ }
+        applyLayout();
+    }
+    window.toggleLayout = toggleLayout;
 
     function getResponsiveGameConfig(waterEl) {
         const width = (waterEl && waterEl.clientWidth) || 260;
@@ -770,6 +819,7 @@
 
     function initGame() {
         updateSpeedButtons();
+        applyLayout();
         isGameOver = false;
         timeLeft = 120;
         const timerEl = document.getElementById('timer');
@@ -842,12 +892,14 @@
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => {
+            applyLayout();
             players.forEach((p) => { p.applyResponsiveSettings(); p.restartSpawnInterval(); });
         }, 180);
     });
 
     window.addEventListener('orientationchange', () => {
         setTimeout(() => {
+            applyLayout();
             players.forEach((p) => { p.applyResponsiveSettings(); p.restartSpawnInterval(); });
         }, 250);
     });
